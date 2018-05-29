@@ -1,12 +1,14 @@
 class IndustryGenerator < Jekyll::Generator
   def generate(site)
-    complete_info = site
+    complete_info =
+      site
       .data['companies']
       .map { |name, details| details.merge({'name' => name}) }
 
     site.data['companies'] = complete_info.reverse
 
-    industries = complete_info
+    industries =
+      complete_info
       .group_by { |company| [company['industry'], company['industry'].downcase.gsub(/[^a-zA-Z]/, "-")] }
       .sort_by { |key, _values| key[0] }
       .reduce([]) do |acc, group|
@@ -20,6 +22,8 @@ class IndustryGenerator < Jekyll::Generator
 
     industries.each { |industry| site.pages << build_page(site, industry) }
   end
+
+  private
 
   def hiring_page(site)
     page = Jekyll::PageWithoutAFile.new(site, site.source, '/', "hiring.md")
